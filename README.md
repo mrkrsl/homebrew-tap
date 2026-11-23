@@ -1,10 +1,10 @@
-# Homebrew tap for Ombro
+# mrkrsl's Homebrew tap
 
 [Ombro](https://ombro.app/) is a crew of AI agents, briefed by you and working
-in the background. This tap installs the desktop app on macOS (Apple silicon):
+in the background. This tap installs its desktop app on macOS (Apple silicon):
 
 ```bash
-brew install mrkrsl/ombro/ombro
+brew install mrkrsl/tap/ombro
 ```
 
 The app updates itself, so `brew upgrade` leaves it alone unless you add
@@ -12,7 +12,7 @@ The app updates itself, so `brew upgrade` leaves it alone unless you add
 also removes its caches and preferences, but not your settings
 (`~/.config/ombro`) or your jobs and chats (`~/Ombro`).
 
-The cask follows Ombro's latest release on its own: a daily workflow takes the
+The Ombro cask follows Ombro's latest release on its own: a daily workflow takes the
 version and checksum from the release, checks the cask with Homebrew and
 installs it before committing.
 
