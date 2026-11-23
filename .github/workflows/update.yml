@@ -20,7 +20,6 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       HOMEBREW_NO_AUTO_UPDATE: "1"
-      HOMEBREW_NO_INSTALL_FROM_API: "1"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Latest release
@@ -34,6 +33,7 @@ jobs:
         run: |
           tap="$(brew --repository)/Library/Taps/mrkrsl/homebrew-ombro"
           mkdir -p "$(dirname "$tap")" && ln -s "$GITHUB_WORKSPACE" "$tap"
+          brew trust --cask mrkrsl/ombro/ombro # a third-party tap must be trusted before Homebrew loads it
           brew style --cask mrkrsl/ombro/ombro
           brew audit --cask --online mrkrsl/ombro/ombro
           brew install --cask mrkrsl/ombro/ombro
