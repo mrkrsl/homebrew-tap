@@ -1,0 +1,48 @@
+# Keeps the cask on Ombro's latest release: daily, and by hand (Actions › Update › Run workflow).
+# A new version is committed only after Homebrew's own checks pass and the app installs.
+name: Update
+
+on:
+  schedule:
+    - cron: "23 7 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: macos-15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      HOMEBREW_NO_AUTO_UPDATE: "1"
+      HOMEBREW_NO_INSTALL_FROM_API: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Latest release
+        id: bump
+        run: |
+          version=$(.github/scripts/bump.sh)
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if git diff --quiet; then echo "changed=false" >> "$GITHUB_OUTPUT"; else echo "changed=true" >> "$GITHUB_OUTPUT"; fi
+      - name: Check and install
+        if: steps.bump.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          tap="$(brew --repository)/Library/Taps/mrkrsl/homebrew-ombro"
+          mkdir -p "$(dirname "$tap")" && ln -s "$GITHUB_WORKSPACE" "$tap"
+          brew style --cask mrkrsl/ombro/ombro
+          brew audit --cask --online mrkrsl/ombro/ombro
+          brew install --cask mrkrsl/ombro/ombro
+          test -d /Applications/Ombro.app
+          brew uninstall --cask mrkrsl/ombro/ombro
+      - name: Commit
+        if: steps.bump.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "ombro ${{ steps.bump.outputs.version }}"
+          git push
