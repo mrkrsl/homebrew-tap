@@ -1,6 +1,6 @@
 cask "ombro" do
-  version "0.5.0"
-  sha256 "c938db1209760d84710e085c3ef6d79c3a67c458d28a611a0d06a1a8c80363bb"
+  version "0.5.1"
+  sha256 "a167c481b29edbb15f4c2fd0dfd226bf90bdd8a41a42f28f68d40962c6b6d86b"
 
   url "https://github.com/mrkrsl/ombro/releases/download/v#{version}/Ombro_#{version}_arm64.dmg",
       verified: "github.com/mrkrsl/ombro/"
